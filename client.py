@@ -7,7 +7,7 @@ import platform
 import psutil
 import socket as sock
 
-HOST = "192.168.137.128"
+HOST = "0.0.0.0"
 PORT = 5000
 
 # SSL setup
