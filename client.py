@@ -19,12 +19,12 @@ client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 secure_socket = context.wrap_socket(client_socket, server_hostname=HOST)
 secure_socket.connect((HOST, PORT))
 
-print("🔗 Connected to server")
+print(" Connected to server")
 
 # Ask for credentials
-print("🔐 Login Required")
-username = input("👤 Username: ")
-password = getpass.getpass("🔑 Password: ")
+print(" Login Required")
+username = input(" Username: ")
+password = getpass.getpass(" Password: ")
 
 secure_socket.send(username.encode())
 secure_socket.send(password.encode())
@@ -32,11 +32,11 @@ secure_socket.send(password.encode())
 response = secure_socket.recv(4096).decode()
 
 if response != "AUTH_SUCCESS":
-    print("❌ Authentication failed. Wrong username or password.")
+    print(" Authentication failed. Wrong username or password.")
     secure_socket.close()
     exit()
 
-print("✅ Device Ready")
+print(" Device Ready")
 
 commands_info = secure_socket.recv(4096).decode()
 print(commands_info)
@@ -73,7 +73,7 @@ def get_device_config():
         disk_total = disk_used = disk_free = "Unavailable"
 
     config = (
-        f"📟 Device Config\n"
+        f" Device Config\n"
         f"  Hostname     : {sock.gethostname()}\n"
         f"  IP Address   : {ip_address}\n"
         f"  OS           : {platform.system()} {platform.release()}\n"
@@ -112,7 +112,7 @@ def receive_from_server():
                 latency = time.time() - start
                 secure_socket.send(f"{result} | Latency: {latency:.5f}s".encode())
                 print(f"\n📡 Server Command: {message}")
-                print(f"✅ {result}")
+                print(f" {result}")
 
             elif message == "TURN_OFF_LIGHT":
                 device_status = "OFF"
@@ -120,21 +120,21 @@ def receive_from_server():
                 latency = time.time() - start
                 secure_socket.send(f"{result} | Latency: {latency:.5f}s".encode())
                 print(f"\n📡 Server Command: {message}")
-                print(f"✅ {result}")
+                print(f" {result}")
 
             elif message == "GET_STATUS":
                 result = f"Device Status: {device_status}"
                 latency = time.time() - start
                 secure_socket.send(f"{result} | Latency: {latency:.5f}s".encode())
                 print(f"\n📡 Server Command: {message}")
-                print(f"✅ {result}")
+                print(f" {result}")
 
             elif message == "GET_TEMPERATURE":
                 result = "Temperature: 25 C"
                 latency = time.time() - start
                 secure_socket.send(f"{result} | Latency: {latency:.5f}s".encode())
-                print(f"\n📡 Server Command: {message}")
-                print(f"✅ {result}")
+                print(f"\n Server Command: {message}")
+                print(f" {result}")
 
             elif message == "GET_DEVICE_CONFIG":
                 config = get_device_config()
@@ -146,12 +146,12 @@ def receive_from_server():
 
             else:
                 # Reply to a CLIENT: command the user typed
-                print(f"\n📥 Server Reply: {message}")
+                print(f"\n Server Reply: {message}")
 
-            print("💻 Enter command for server: ", end="", flush=True)
+            print(" Enter command for server: ", end="", flush=True)
 
         except Exception as e:
-            print(f"\n⚠️  Connection to server lost: {e}")
+            print(f"\n  Connection to server lost: {e}")
             break
 
 
@@ -159,7 +159,7 @@ def send_to_server():
     """Only sends — never calls recv()."""
     while True:
         try:
-            msg = input("💻 Enter command for server: ").strip()
+            msg = input(" Enter command for server: ").strip()
 
             if not msg:
                 continue
@@ -167,14 +167,14 @@ def send_to_server():
             secure_socket.send(("CLIENT:" + msg).encode())
 
             if msg == "EXIT":
-                print("👋 Disconnecting...")
+                print(" Disconnecting...")
                 break
 
         except KeyboardInterrupt:
-            print("\n👋 Disconnecting...")
+            print("\n Disconnecting...")
             break
         except Exception as e:
-            print(f"⚠️  Error: {e}")
+            print(f"  Error: {e}")
             break
 
 
@@ -182,4 +182,4 @@ threading.Thread(target=receive_from_server, daemon=True).start()
 send_to_server()
 
 secure_socket.close()
-print("🔌 Disconnected from server.")
+print(" Disconnected from server.")
