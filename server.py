@@ -21,11 +21,11 @@ server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server_socket.bind((HOST, PORT))
 server_socket.listen(5)
 
-print("🔐 Secure Server Started...")
+print(" Secure Server Started...")
 print("Waiting for clients...\n")
 
 COMMANDS_INFO = (
-    "\n📋 Available Commands:\n"
+    "\n Available Commands:\n"
     "  TURN_ON_LIGHT     - Turn the light ON\n"
     "  TURN_OFF_LIGHT    - Turn the light OFF\n"
     "  GET_STATUS        - Get device status\n"
@@ -46,13 +46,13 @@ def handle_client(conn, addr):
             conn.send("AUTH_SUCCESS".encode())
             clients.append(conn)
             client_queues[conn] = queue.Queue()
-            print(f"✅ Authenticated: {addr}")
+            print(f" Authenticated: {addr}")
 
             # Send available commands after auth
             conn.send(COMMANDS_INFO.encode())
         else:
             conn.send("AUTH_FAILED".encode())
-            print(f"❌ Authentication failed: {addr}")
+            print(f" Authentication failed: {addr}")
             conn.close()
             return
 
@@ -63,7 +63,7 @@ def handle_client(conn, addr):
             if not msg:
                 break
 
-            print(f"\n📩 From {addr}: {msg}")
+            print(f"\n From {addr}: {msg}")
 
             if msg.startswith("CLIENT:"):
                 actual = msg[len("CLIENT:"):]
@@ -82,7 +82,7 @@ def handle_client(conn, addr):
                     conn.send("Disconnecting...".encode())
                     break
                 else:
-                    response = "❌ Unknown command. Type a valid command."
+                    response = " Unknown command. Type a valid command."
 
                 conn.send(response.encode())
 
@@ -113,16 +113,16 @@ def accept_clients():
 
 
 def server_commands():
-    print("🖥️  Server control ready. Type a command to send to all clients.\n")
+    print("  Server control ready. Type a command to send to all clients.\n")
     while True:
         try:
-            command = input("\n🖥️  Server Command: ").strip()
+            command = input("\n  Server Command: ").strip()
 
             if not command:
                 continue
 
             if not clients:
-                print("⚠️  No clients connected.")
+                print("  No clients connected.")
                 if command == "EXIT":
                     print("Shutting down server...")
                     break
@@ -132,9 +132,9 @@ def server_commands():
                 try:
                     c.send(command.encode())
                     response = client_queues[c].get(timeout=10)
-                    print(f"\n📥 Client Response:\n{response}")
+                    print(f"\n Client Response:\n{response}")
                 except queue.Empty:
-                    print("⚠️  No response from client (timeout)")
+                    print("  No response from client (timeout)")
                 except Exception as e:
                     print(f"Error sending command: {e}")
 
